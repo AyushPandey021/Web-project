@@ -1,3 +1,4 @@
+
 export default {
     generateRandomString() {
         const crypto = window.crypto || window.msCrypto;
@@ -325,3 +326,5 @@ export default {
         }, 2000 );
     }
 };
+
+

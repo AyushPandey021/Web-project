@@ -1,239 +1,251 @@
-<!doctype html>
-<html>
-  <head>
-    <title>Multi-User Video Call</title>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Multi-User Video Call</title>
+  <link rel="stylesheet" href="/src/assets/css/app.css">
 
-    <meta content="width=device-width, initial-scale=1" name="viewport" />
+  <!-- Bootstrap 4 -->
+  <link 
+    rel="stylesheet" 
+    href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css" 
+    integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh" 
+    crossorigin="anonymous"
+  />
 
-    <link
-      rel="stylesheet"
-      href="https://stackpath.bootstrapcdn.com/bootstrap/4.4.1/css/bootstrap.min.css"
-      integrity="sha384-Vkoo8x4CGsO3+Hhxv8T/Q5PaXtkKtu6ug5TOeNV6gBiFeWPGFN9MuhOf23Q9Ifjh"
-      crossorigin="anonymous"
-    />
-    <link
-      rel="stylesheet"
-      href="https://use.fontawesome.com/releases/v5.7.2/css/all.css"
-      integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr"
-      crossorigin="anonymous"
-    />
-    <link rel="stylesheet" href="assets/css/app.css" type="text/css" />
+  <!-- Font Awesome -->
+  <link 
+    rel="stylesheet" 
+    href="https://use.fontawesome.com/releases/v5.7.2/css/all.css" 
+    integrity="sha384-fnmOCqbTlWIlj8LyTjo7mOUStjsKC4pOpQbqyi7RrhN7udi9RwhKkMHpvLbHG9Sr" 
+    crossorigin="anonymous"
+  />
 
-    <script src="/socket.io/socket.io.js"></script>
-    <script type="module" src="assets/js/rtc.js"></script>
-    <script type="module" src="assets/js/events.js"></script>
-    <script
-      src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/7.3.0/adapter.min.js"
-      integrity="sha256-2qQheewaqnZlXJ3RJRghVUwD/3fD9HNqxh4C+zvgmF4="
-      crossorigin="anonymous"
-    ></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
-    <script src="https://cdn.rawgit.com/yahoo/xss-filters/master/dist/xss-filters.js"></script>
-    <script src="assets/js/autolink.js"></script>
-  </head>
+  <!-- TailwindCSS -->
+  <script src="https://cdn.tailwindcss.com"></script>
 
-  <body>
-    <div class="custom-modal" id="recording-options-modal">
-      <div class="custom-modal-content">
-        <div class="row text-center">
-          <div class="col-md-6 mb-2">
-            <span class="record-option" id="record-video">Record video</span>
-          </div>
-          <div class="col-md-6 mb-2">
-            <span class="record-option" id="record-screen">Record screen</span>
-          </div>
+  <!-- Your Custom CSS -->
+  <link rel="stylesheet" href="assets/css/app.css" type="text/css">
+
+  <!-- WebRTC Adapter -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/webrtc-adapter/7.3.0/adapter.min.js" crossorigin="anonymous"></script>
+
+  <!-- Moment.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.24.0/moment.min.js"></script>
+
+  <!-- FileSaver.js -->
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/FileSaver.js/1.3.8/FileSaver.min.js"></script>
+
+  <!-- XSS Filters -->
+  <script src="https://cdn.jsdelivr.net/npm/xss-filters@1.2.7/dist/xss-filters.min.js"></script>
+
+  <!-- AutoLink (your custom) -->
+  <script src="assets/js/autolink.js"></script>
+
+  <!-- Socket.io -->
+  <script src="/socket.io/socket.io.js"></script>
+
+  <!-- Your RTC and Events JS (Module Type) -->
+  <script type="module" src="assets/js/rtc.js"></script>
+  <script type="module" src="assets/js/events.js"></script>
+
+
+</head>
+
+<body class="bg-gray-100">
+
+  <!-- Recording Options Modal -->
+<div class="custom-modal fixed inset-0 bg-black bg-opacity-50 flex justify-center items-center hidden" id="recording-options-modal">
+  <div class="custom-modal-content bg-white rounded-lg shadow-lg w-full sm:w-96 p-6 text-center">
+    <!-- Modal Header -->
+    <div class="mb-4">
+      <h4 class="text-xl font-semibold text-gray-800">Recording Options</h4>
+    </div>
+
+    <!-- Modal Body -->
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 mb-6">
+      <div>
+        <span id="record-video" class="record-option text-blue-500 cursor-pointer hover:text-blue-700 flex justify-center items-center space-x-2">
+          <i class="fa fa-video"></i>
+          <span>Record Video</span>
+        </span>
+      </div>
+      <div>
+        <span id="record-screen" class="record-option text-blue-500 cursor-pointer hover:text-blue-700 flex justify-center items-center space-x-2">
+          <i class="fa fa-desktop"></i>
+          <span>Record Screen</span>
+        </span>
+      </div>
+    </div>
+
+    <!-- Modal Footer -->
+    <div>
+      <button id="closeModal" class="btn btn-outline-danger border border-red-500 text-red-500 hover:bg-red-500 hover:text-white rounded-md py-2 px-6 transition duration-300">
+        Close
+      </button>
+    </div>
+  </div>
+</div>
+
+  <!-- Navbar -->✔️✔️
+  <nav class="navbar fixed-top bg-gradient-to-r from-blue-500 to-teal-400 p-3 rounded-b-lg shadow-lg flex justify-between items-center text-white">
+    <div class="text-xl font-semibold">Video Call</div>
+  
+    <div class="flex items-center space-x-4 room-comm" hidden>
+      <!-- Unique Identifier -->
+      <div class="text-white flex items-center space-x-2">
+        <span>Unique Identifier: <span id="randomNumber" class="font-medium">1889</span></span>
+      </div>
+  
+      <!-- Video Toggle Button -->
+      <button class="btn btn-sm p-2 rounded-full bg-blue-700 hover:bg-blue-600 focus:outline-none" id="toggle-video" title="Hide Video">
+        <i class="fa fa-video text-white"></i>
+      </button>
+  
+      <!-- Mute Button -->
+      <button class="btn btn-sm p-2 rounded-full bg-blue-700 hover:bg-blue-600 focus:outline-none" id="toggle-mute" title="Mute">
+        <i class="fa fa-microphone-alt text-white"></i>
+      </button>
+  
+      <!-- Screen Share Button -->
+      <button class="btn btn-sm p-2 rounded-full bg-blue-700 hover:bg-blue-600 focus:outline-none" id="share-screen" title="Share screen">
+        <i class="fa fa-desktop text-white"></i>
+      </button>
+  
+      <!-- Record Button -->
+      <button class="btn btn-sm p-2 rounded-full bg-blue-700 hover:bg-blue-600 focus:outline-none" id="record" title="Record">
+        <i class="fa fa-dot-circle text-white"></i>
+      </button>
+  
+      <!-- Chat Toggle Button -->
+      <button class="btn btn-sm p-2 rounded-full bg-blue-700 hover:bg-blue-600 focus:outline-none" id="toggle-chat-pane" title="Open Chat">
+        <i class="fa fa-comment text-white"></i>
+        <span class="badge bg-red-500 text-white text-xs font-semibold rounded-full px-2 py-1" id="new-chat-notification" hidden>New</span>
+      </button>
+  
+      <!-- Leave Button -->
+      <button class="btn btn-sm p-2 rounded-full bg-blue-700 hover:bg-blue-600 focus:outline-none">
+        <a href="/" class="text-white">
+          <i class="fa fa-sign-out-alt" title="Leave"></i>
+        </a>
+      </button>
+    </div>
+  </nav>
+  
+
+  <!-- Room Create -->✔️✔️
+  <div class="min-h-screen flex items-center justify-center p-8 bg-gradient-to-r from-blue-400 via-purple-500 to-pink-500" id="room-create" hidden>
+    <div class="bg-white rounded-xl shadow-2xl overflow-hidden flex flex-col md:flex-row w-full max-w-4xl">
+      
+      <!-- Left Side with Image -->
+      <div class="md:w-1/2 hidden md:block">
+        <img src="https://images.unsplash.com/photo-1581090700227-1f9c8262d274?auto=format&fit=crop&w=800&q=80" alt="Create Room" class="h-full w-full object-cover" />
+      </div>
+  
+      <!-- Right Side Form -->
+      <div class="w-full md:w-1/2 p-8 flex flex-col justify-center">
+        <div class="text-center mb-8">
+          <h2 class="text-3xl font-bold text-gray-700 mb-2 flex justify-center items-center">
+            <i class="fas fa-video mr-2 text-indigo-500"></i> Ayush Create Room
+          </h2>
+          <p class="text-sm text-gray-500">Enter your details to start a new room</p>
         </div>
-
-        <div class="row mt-3">
-          <div class="col-md-12 text-center">
-            <button class="btn btn-outline-danger" id="closeModal">
-              Close
+  
+        <div class="mb-4 text-center">
+          <span class="text-red-500 text-sm" id="err-msg"></span>
+        </div>
+  
+        <div class="space-y-5">
+          <div>
+            <label for="room-name" class="block text-gray-600 mb-1">Room Name</label>
+            <div class="relative">
+              <input type="text" id="room-name" class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter Room Name" />
+              <i class="fas fa-door-open absolute left-3 top-3 text-gray-400"></i>
+            </div>
+          </div>
+  
+          <div>
+            <label for="your-name" class="block text-gray-600 mb-1">Your Name</label>
+            <div class="relative">
+              <input type="text" id="your-name" class="w-full border border-gray-300 rounded-lg pl-10 pr-4 py-3 focus:outline-none focus:ring-2 focus:ring-purple-400" placeholder="Enter Your Name" />
+              <i class="fas fa-user absolute left-3 top-3 text-gray-400"></i>
+            </div>
+          </div>
+  
+          <div>
+            <button id="create-room" class="w-full bg-gradient-to-r from-purple-500 to-pink-500 hover:from-pink-500 hover:to-purple-500 text-white font-bold py-3 rounded-lg transition duration-300 transform hover:scale-105">
+              <i class="fas fa-plus-circle mr-2"></i> Create Room
             </button>
           </div>
+  
+          <div id="room-created" class="text-center text-green-500 font-semibold"></div>
         </div>
+  
       </div>
     </div>
+  </div>
+  
+  <!-- Username Entry Page -->
+ 
+  </div>
 
-    <nav class="navbar fixed-top bg-info rounded-0 d-print-none">
-      <div class="text-white">Video Call</div>
-
-      <div class="pull-right room-comm" hidden>
-        <span class="text-white mr-5">
-          Unique Identifier: <span id="randomNumber"></span>
-        </span>
-
-        <button
-          class="btn btn-sm rounded-0 btn-no-effect"
-          id="toggle-video"
-          title="Hide Video"
-        >
-          <i class="fa fa-video text-white"></i>
-        </button>
-
-        <button
-          class="btn btn-sm rounded-0 btn-no-effect"
-          id="toggle-mute"
-          title="Mute"
-        >
-          <i class="fa fa-microphone-alt text-white"></i>
-        </button>
-
-        <button
-          class="btn btn-sm rounded-0 btn-no-effect"
-          id="share-screen"
-          title="Share screen"
-        >
-          <i class="fa fa-desktop text-white"></i>
-        </button>
-
-        <button
-          class="btn btn-sm rounded-0 btn-no-effect"
-          id="record"
-          title="Record"
-        >
-          <i class="fa fa-dot-circle text-white"></i>
-        </button>
-
-        <button
-          class="btn btn-sm text-white pull-right btn-no-effect"
-          id="toggle-chat-pane"
-        >
-          <i class="fa fa-comment"></i>
-          <span
-            class="badge badge-danger very-small font-weight-lighter"
-            id="new-chat-notification"
-            hidden
-            >New</span
-          >
-        </button>
-
-        <button class="btn btn-sm rounded-0 btn-no-effect text-white">
-          <a href="/" class="text-white text-decoration-none"
-            ><i class="fa fa-sign-out-alt text-white" title="Leave"></i
-          ></a>
-        </button>
-      </div>
-    </nav>
-
-    <div class="container-fluid" id="room-create" hidden>
-      <div class="row">
-        <div class="col-12 h2 mt-5 text-center">Create Room</div>
-      </div>
-
-      <div class="row mt-2">
-        <div class="col-12 text-center">
-          <span class="form-text small text-danger" id="err-msg"></span>
-        </div>
-
-        <div class="col-12 col-md-4 offset-md-4 mb-3">
-          <label for="room-name">Room Name</label>
-          <input
-            type="text"
-            id="room-name"
-            class="form-control rounded-0"
-            placeholder="Room Name"
-          />
-        </div>
-
-        <div class="col-12 col-md-4 offset-md-4 mb-3">
-          <label for="your-name">Your Name</label>
-          <input
-            type="text"
-            id="your-name"
-            class="form-control rounded-0"
-            placeholder="Your Name"
-          />
-        </div>
-
-        <div class="col-12 col-md-4 offset-md-4 mb-3">
-          <button id="create-room" class="btn btn-block rounded-0 btn-info">
-            Create Room
-          </button>
-        </div>
-
-        <div class="col-12 col-md-4 offset-md-4 mb-3" id="room-created"></div>
-      </div>
+  <!-- Room Communication (Video and Chat) -->
+  <div class="container-fluid room-comm" hidden>
+    <div class="row">
+      <video class="local-video mirror-mode" id="local" volume="0" autoplay muted></video>
     </div>
 
-    <div class="container-fluid" id="username-set" hidden>
-      <div class="row">
-        <div class="col-12 h4 mt-5 text-center">Your Name</div>
+    <div class="row">
+      <div class="col-md-12 main" id="main-section">
+        <div class="row mt-2 mb-2" id="videos"></div>
       </div>
 
-      <div class="row mt-2">
-        <div class="col-12 text-center">
-          <span
-            class="form-text small text-danger"
-            id="err-msg-username"
-          ></span>
+      <div class="col-md-3 chat-col d-print-none mb-2 bg-info" id="chat-pane" hidden>
+        <div class="row">
+          <div class="col-12 text-center h2 mb-3">CHAT</div>
         </div>
 
-        <div class="col-12 col-md-4 offset-md-4 mb-3">
-          <label for="username">Your Name</label>
-          <input
-            type="text"
-            id="username"
-            class="form-control rounded-0"
-            placeholder="Your Name"
-          />
-        </div>
+        <div id="chat-messages"></div>
 
-        <div class="col-12 col-md-4 offset-md-4 mb-3">
-          <button id="enter-room" class="btn btn-block rounded-0 btn-info">
-            Enter Room
-          </button>
-        </div>
-      </div>
-    </div>
-
-    <div class="container-fluid room-comm" hidden>
-      <div class="row">
-        <video
-          class="local-video mirror-mode"
-          id="local"
-          volume="0"
-          autoplay
-          muted
-        ></video>
-      </div>
-
-      <div class="row">
-        <div class="col-md-12 main" id="main-section">
-          <div class="row mt-2 mb-2" id="videos"></div>
-        </div>
-
-        <div
-          class="col-md-3 chat-col d-print-none mb-2 bg-info"
-          id="chat-pane"
-          hidden
-        >
-          <div class="row">
-            <div class="col-12 text-center h2 mb-3">CHAT</div>
-          </div>
-
-          <div id="chat-messages"></div>
-
-          <form>
-            <div class="input-group mb-3">
+        <form>
+          <div class="input-group mb-3">
+            <div class="flex items-center w-full space-x-2">
+              <!-- Chat Input -->
               <textarea
                 id="chat-input"
-                class="form-control rounded-0 chat-box border-info"
+                class="form-control w-full rounded-lg border-2 border-gray-300 focus:outline-none focus:ring-2 focus:ring-blue-500 p-3"
                 rows="3"
                 placeholder="Type here..."
               ></textarea>
-              <div class="input-group-append" id="chat-input-btn">
-                <button
-                  type="button"
-                  class="btn btn-dark rounded-0 border-info btn-no-effect"
-                >
-                  Send
-                </button>
-              </div>
+              <!-- Send Button -->
+              <button
+                type="button"
+                class="btn bg-blue-600 text-white rounded-lg px-4 py-2 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500"
+                id="chat-input-btn"
+              >
+                Send
+              </button>
             </div>
-          </form>
-        </div>
+          </div>
+          
+        </form>
       </div>
     </div>
-  </body>
+  </div>
+ 
+
+  
+<script>
+    function generateUniqueNumber() {
+            // Generate a 4-digit number between 1000 and 9999
+            return Math.floor(1000 + Math.random() * 9000);
+        }
+
+        // Display the generated number in the element with id "randomNumber"
+        window.onload = function() {
+            document.getElementById('randomNumber').innerText = generateUniqueNumber();
+        }
+</script>
+</body>
 </html>

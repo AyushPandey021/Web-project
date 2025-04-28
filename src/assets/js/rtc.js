@@ -3,6 +3,7 @@
  * @date 6th January
  */
 import h from "./helpers.js";
+local
 
 window.addEventListener("load", () => {
   const room = h.getQString(location.href, "room");
